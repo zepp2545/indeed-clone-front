@@ -12,7 +12,7 @@ function App() {
         <Route exact path="/">
           <Top />
         </Route>
-        <Route path="/jobs">
+        <Route path="/jobs" >
           <Jobs />
         </Route>
       </Switch>

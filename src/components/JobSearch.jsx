@@ -9,7 +9,6 @@ const JobSearchWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding: 20px;
 `
 const Input = styled.input`
   height: 40px;

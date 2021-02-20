@@ -1,9 +1,9 @@
-export const InitialState = {
+export const initialState = {
   keyword: '',
   location: ''
 }
 
-export const JobsSearchReducer = (state, action) => {
+export const jobsSearchReducer = (state, action) => {
   switch (action.e.target.name) {
     case "keyword":
       return {
