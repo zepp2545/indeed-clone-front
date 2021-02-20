@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 
 // images
 import logo from '../images/logo.png'
@@ -17,7 +18,9 @@ const LogoImage = styled.img`
 export const Header = () => {
   return (
     <HeaderWrapper>
-      <LogoImage src={logo} alt="logo" />
+      <Link to="/">
+        <LogoImage src={logo} alt="logo" />
+      </Link>
     </HeaderWrapper>
   )
 }

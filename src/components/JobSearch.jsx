@@ -29,11 +29,16 @@ const SubmitButton = styled(BaseButton)`
   height: 45px;
   line-height: 45px;
   margin-left: 20px;
+  
+`
+
+const ButtonLink = styled(Link)`
+  text-decoration: none;
 `
 
 export const JobSearch = (props) => {
 
-  const ParsedUrl = (keyword, location) => {
+  const parsedUrl = (keyword, location) => {
     return (`/jobs?keyword=${keyword}&location=${location}`)
   }
 
@@ -55,11 +60,11 @@ export const JobSearch = (props) => {
           onChange={props.handleInput} 
         />
       </ItemWrapper>
-      <Link to={ParsedUrl(props.state.keyword, props.state.location)}>
+      <ButtonLink to={parsedUrl(props.state.keyword, props.state.location)}>
         <SubmitButton>
           求人検索
         </SubmitButton>
-      </Link>
+      </ButtonLink>
     </JobSearchWrapper>
   )
 } 

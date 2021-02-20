@@ -13,7 +13,7 @@ export const jobsReducer = (state, action) => {
     case "done":
       return {
         ...state,
-        fetchState: 'loading',
+        fetchState: 'done',
         jobsList: action.payloads.jobs
       }
   }
