@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useReducer } from 'react'
 import styled from 'styled-components'
 
 // components
@@ -9,6 +9,9 @@ import { Footer } from '../components/Footer'
 
 // constants
 import { COLORS } from '../constants/styleConstants'
+
+// reducers
+import { InitialState as JobsSearchInitialState, JobsSearchReducer} from '../reducers/JobsSearch'
 
 const DescriptionWrapper = styled.p`
   width: 80%;
@@ -26,11 +29,18 @@ const TopWrapper = styled.div`
 `
 
 export const Top = () => {
+
+  const [JobsSearchState, dispatch] = useReducer(JobsSearchReducer, JobsSearchInitialState)
+
+  const handleInput = (e) => {
+    dispatch({ e: e })
+  }
+
   return (
     <TopWrapper>
       <Header />
       <Container>
-        <JobSearch />
+        <JobSearch state={JobsSearchState} handleInput={handleInput}/>
         <DescriptionWrapper>
           <span>履歴書・プロフィールを登録</span> – すぐに登録できます
         </DescriptionWrapper>
