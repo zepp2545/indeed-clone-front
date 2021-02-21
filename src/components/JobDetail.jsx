@@ -1,6 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 
+// css
+// this is not cool. have to change this later
+import '../styles/job-detail.css'
+
 // components
 import { Tag } from './Tags/Tag'
 
@@ -8,7 +12,6 @@ const JobDetailPanel = styled.div`
   border: solid 1px #dcdcdc;
   padding: 15px;
   border-radius: 10px;
-  position: relative;
 `
 const PanelHeader = styled.div`
   padding: 15px;
@@ -40,22 +43,24 @@ const Cross = styled.div`
 `
 
 
-export const JobDetail = (prop) => {
+export const JobDetail = (props) => {
+  const jobDetailClass = props.isJobDetailFixed ? '-fixed' : '-relative'
+
   return (
-    <JobDetailPanel>
-      <Cross onClick={prop.closeJobDetail}>×</Cross>
+    <JobDetailPanel className={jobDetailClass}>
+      <Cross onClick={props.closeJobDetail}>×</Cross>
       <PanelHeader>
-        <Title>{prop.job.title}</Title>
-        <p>{prop.job.prefecture.name}</p>
+        <Title>{props.job.title}</Title>
+        <p>{props.job.prefecture.name}</p>
         {
-          prop.job.location_detail !== '' &&
-          <p>{prop.job.location_detail}</p>
+          props.job.location_detail !== '' &&
+          <p>{props.job.location_detail}</p>
         }  
       </PanelHeader>
       <PanelBody>
-        {prop.job.features.map(feature => <Tag key={feature.id}>{feature.name}</Tag>)}
+        {props.job.features.map(feature => <Tag key={feature.id}>{feature.name}</Tag>)}
         <Description>
-          {prop.job.description}
+          {props.job.description}
         </Description>
       </PanelBody>
     </JobDetailPanel>

@@ -33,22 +33,22 @@ const DateWrapper = styled.div`
   color: #ababab;
 `
 
-export const JobListPanel = (prop) => {
+export const JobListPanel = (props) => {
 
   return (
-    <Panel onClick={() => prop.openJobDetail(prop.job)}>
-      <Title>{prop.job.title}</Title>
-      <p>{prop.job.prefecture.name}</p>
+    <Panel onClick={() => props.openJobDetail(props.job)}>
+      <Title>{props.job.title}</Title>
+      <p>{props.job.prefecture.name}</p>
       {
-        prop.job.location_detail !== '' &&
-        <p>{prop.job.location_detail}</p>
+        props.job.location_detail !== '' &&
+        <p>{props.job.location_detail}</p>
       }      
-      {prop.job.features.map(feature => <Tag key={feature.id}>{feature.name}</Tag>)}
+      {props.job.features.map(feature => <Tag key={feature.id}>{feature.name}</Tag>)}
       <Description>
-        {prop.job.description}
+        {props.job.description}
       </Description>
       <DateWrapper>
-        {moment(prop.job.created_at).fromNow()}
+        {moment(props.job.created_at).fromNow()}
       </DateWrapper>
     </Panel>
   )

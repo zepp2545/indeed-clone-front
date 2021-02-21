@@ -1,4 +1,4 @@
-import React, { Fragment, useReducer, useEffect, useState } from 'react'
+import React, { Fragment, useReducer, useEffect, useState, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import { CircularProgress } from '@material-ui/core';
@@ -69,17 +69,17 @@ export const Jobs = () => {
 
   const initialState = {
     isJobOpened: false,
-    selectedJob: {}
+    selectedJob: {},
+    isJobDetailFixed: false
   }
 
   const [jobsSearchState, dispatch] = useReducer(jobsSearchReducer, initialJobsSearchState)
   const [jobsState, jobsDispatch] = useReducer(jobsReducer, initialJobsState)
   const [state, setState] = useState(initialState)
 
-  const openJobDetail = (job) => {
-    setState({...initialState, isJobOpened: true, selectedJob: job })
-    window.history.pushState('', '', `?keyword=${keyword}&location=${location}&adv=${job.id}`)
-  }
+  // Needs the stateRef for mutable state that getScrollTop func refers to
+  let stateRef = useRef()
+  stateRef.current = state
 
   const closeJobDetail = () => {
     setState({...initialState, isJobOpened: false, selectedJob: {} })
@@ -90,7 +90,24 @@ export const Jobs = () => {
     dispatch({ e: e })
   }
 
+  const getScrollTop = () => {
+    if (document.documentElement.scrollTop >= 179) {
+      setState({ ...stateRef.current, isJobDetailFixed: true })
+    } else {
+      setState({ ...stateRef.current, isJobDetailFixed: false })
+    } 
+  }
+
+  const openJobDetail = (job) => {
+    getScrollTop()
+    setState({ ...stateRef.current, isJobOpened: true, selectedJob: job })
+    window.history.pushState('', '', `?keyword=${keyword}&location=${location}&adv=${job.id}`)
+  }
+  
+
   useEffect(() => {
+    document.addEventListener('scroll', () => getScrollTop())
+    closeJobDetail()
     jobsDispatch({ fetchState: 'fetching' })
     searchJob(initialJobsSearchState).then(data => {
       jobsDispatch({ 
@@ -100,6 +117,9 @@ export const Jobs = () => {
         }
       })
     })
+    return () => {
+      document.removeEventListener('scroll', getScrollTop())
+    }
   }, [keyword, location])
 
   return (
@@ -122,7 +142,11 @@ export const Jobs = () => {
                  <RightContent>
                   {
                     state.isJobOpened &&
-                      <JobDetail job={state.selectedJob} closeJobDetail={closeJobDetail} />
+                      <JobDetail 
+                        job={state.selectedJob} 
+                        closeJobDetail={closeJobDetail}
+                        isJobDetailFixed={stateRef.current.isJobDetailFixed}
+                      />
                   }
                  </RightContent>
                </Fragment>  
