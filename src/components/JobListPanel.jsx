@@ -33,17 +33,17 @@ const DateWrapper = styled.div`
   color: #ababab;
 `
 
-export const JobPanel = (prop) => {
+export const JobListPanel = (prop) => {
 
   return (
-    <Panel>
+    <Panel onClick={() => prop.openJobDetail(prop.job)}>
       <Title>{prop.job.title}</Title>
       <p>{prop.job.prefecture.name}</p>
       {
-        prop.job !== '' &&
-         <p>{prop.job.location_detail}</p>
+        prop.job.location_detail !== '' &&
+        <p>{prop.job.location_detail}</p>
       }      
-      {prop.job.features.map(feature => <Tag>{feature.name}</Tag>)}
+      {prop.job.features.map(feature => <Tag key={feature.id}>{feature.name}</Tag>)}
       <Description>
         {prop.job.description}
       </Description>

@@ -1,4 +1,4 @@
-import React, { Fragment, useReducer, useEffect } from 'react'
+import React, { Fragment, useReducer, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import { CircularProgress } from '@material-ui/core';
@@ -14,14 +14,15 @@ import { searchJob } from '../apis/jobs'
 import { Header } from '../components/Header'
 import { JobSearch } from '../components/JobSearch'
 import { Container } from '../components/Container'
-import { JobPanel } from '../components/JobPanel'
+import { JobListPanel } from '../components/JobListPanel'
+import { JobDetail } from '../components/JobDetail'
 
 const JobSearchWrapper = styled.div`
   padding: 10px;
   border-bottom: 1px solid #f2f2f2;
 `
 const MainContainer = styled(Container)`
-  min-width: 1100px;
+  min-width: 1200px;
 `
 
 const CircleLoading = styled(CircularProgress)`
@@ -30,20 +31,26 @@ const CircleLoading = styled(CircularProgress)`
 
 const LeftContent = styled.div`
   width: 40%;
+  padding: 0 15px;
+  box-sizing: border-box;
 `
 const RightContent = styled.div`
   width: 60%;
+  padding: 0 25px;
+  box-sizing: border-box;
 `
 
 const MainContent = styled.div`
   display: flex;
   justify-content: start;
+  width: 100%;
 `
 
 const CircleWrapper = styled.div`
   display: flex;
   justify-content: center;
   padding: 100px;
+  width: 100%;
 `
 
 export const Jobs = () => {
@@ -60,8 +67,24 @@ export const Jobs = () => {
     location: location
   }
 
+  const initialState = {
+    isJobOpened: false,
+    selectedJob: {}
+  }
+
   const [jobsSearchState, dispatch] = useReducer(jobsSearchReducer, initialJobsSearchState)
   const [jobsState, jobsDispatch] = useReducer(jobsReducer, initialJobsState)
+  const [state, setState] = useState(initialState)
+
+  const openJobDetail = (job) => {
+    setState({...initialState, isJobOpened: true, selectedJob: job })
+    window.history.pushState('', '', `?keyword=${keyword}&location=${location}&adv=${job.id}`)
+  }
+
+  const closeJobDetail = () => {
+    setState({...initialState, isJobOpened: false, selectedJob: {} })
+    window.history.pushState('', '' , `?keyword=${keyword}&location=${location}`)
+  }
 
   const handleInput = (e) => {
     dispatch({ e: e })
@@ -89,21 +112,26 @@ export const Jobs = () => {
       </JobSearchWrapper> 
       <MainContainer>
         <MainContent>
-          <LeftContent>
+          
             {
               jobsState.fetchState === 'done' ? 
-                jobsState.jobsList.map((job) => <JobPanel job={job} key={job.id} />)
+               <Fragment>
+                 <LeftContent>
+                  { jobsState.jobsList.map((job) => <JobListPanel job={job} key={job.id} openJobDetail={(job) => openJobDetail(job)} />) }
+                 </LeftContent>
+                 <RightContent>
+                  {
+                    state.isJobOpened &&
+                      <JobDetail job={state.selectedJob} closeJobDetail={closeJobDetail} />
+                  }
+                 </RightContent>
+               </Fragment>  
               :
                 <CircleWrapper>
                   <CircleLoading />
                 </CircleWrapper>     
-            }
-          </LeftContent>
-          <RightContent>
-          </RightContent>
+            }   
         </MainContent>
-        
-        
       </MainContainer>
     </Fragment>
   )
