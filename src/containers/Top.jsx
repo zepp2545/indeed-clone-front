@@ -4,14 +4,14 @@ import styled from 'styled-components'
 // components
 import { Header } from '../components/Header'
 import { Container } from '../components/Container'
-import { JobSearch } from '../components/JobSearch'
+import { JobsSearch } from '../components/JobsSearch'
 import { Footer } from '../components/Footer'
 
 // constants
 import { COLORS } from '../constants/styleConstants'
 
 // reducers
-import { initialState as jobsSearchInitialState, jobsSearchReducer} from '../reducers/JobsSearch'
+import { initialState as jobsSearchInitialState, jobsSearchReducer} from '../reducers/jobsSearch'
 
 const DescriptionWrapper = styled.p`
   width: 80%;
@@ -44,7 +44,7 @@ export const Top = () => {
       <Header />
       <Container>
         <JobSearchWrapper>
-          <JobSearch state={jobsSearchState} handleInput={handleInput}/>
+          <JobsSearch state={jobsSearchState} handleInput={handleInput}/>
         </JobSearchWrapper>  
         <DescriptionWrapper>
           <span>履歴書・プロフィールを登録</span> – すぐに登録できます

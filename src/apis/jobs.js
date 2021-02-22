@@ -6,8 +6,8 @@ import { JOBS_SEARCH_URL } from '../urls/index'
 export const searchJob = async (conditions) => {
   return await axios.get(JOBS_SEARCH_URL, { 
     params: {
-    keyword: conditions.keyword, 
-    location: conditions.location 
+      keyword: conditions.keyword, 
+      location: conditions.location 
     }
   })
   .then(res => {

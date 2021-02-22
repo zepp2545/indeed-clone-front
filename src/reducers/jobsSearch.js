@@ -1,6 +1,6 @@
 export const initialState = {
   keyword: '',
-  location: '',
+  location: ''
 }
 
 export const jobsSearchReducer = (state, action) => {

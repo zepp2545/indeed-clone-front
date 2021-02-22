@@ -6,6 +6,10 @@ import 'moment/locale/ja'
 // components
 import { Tag } from './Tags/Tag'
 
+// styles
+// not good. need to be modified
+import '../styles/border.css'
+
 const Panel = styled.div`
   border: 1px solid #dfdfdf;
   height: 300px;
@@ -14,6 +18,7 @@ const Panel = styled.div`
   padding: 15px;
   margin-bottom: 20px;
   cursor: pointer;
+  
 `
 
 const Title = styled.h2`
@@ -34,9 +39,10 @@ const DateWrapper = styled.div`
 `
 
 export const JobListPanel = (props) => {
+  const borderClass = props.selectedJob && (props.selectedJob.id === props.job.id) && '-selected'
 
   return (
-    <Panel onClick={() => props.openJobDetail(props.job)}>
+    <Panel onClick={() => props.openJobDetail(props.job)} className={borderClass} >
       <Title>{props.job.title}</Title>
       <p>{props.job.prefecture.name}</p>
       {

@@ -7,6 +7,7 @@ import '../styles/job-detail.css'
 
 // components
 import { Tag } from './Tags/Tag'
+import { BaseButton } from './Buttons/BaseButton'
 
 const JobDetailPanel = styled.div`
   border: solid 1px #dcdcdc;
@@ -21,6 +22,14 @@ const Title = styled.h2`
   font-size: 20px;
   font-weight: 500;
   margin: 0;
+`
+
+const ModalButton = styled(BaseButton)`
+  width: 200px;
+  height: 45px;
+  font-size: 20px;
+  line-height: 45px;
+  font-weight: 600;
 `
 
 const PanelBody = styled.div`
@@ -55,7 +64,10 @@ export const JobDetail = (props) => {
         {
           props.job.location_detail !== '' &&
           <p>{props.job.location_detail}</p>
-        }  
+        } 
+        <ModalButton onClick={props.openApplicationModal}>
+          応募画面へ進む
+        </ModalButton>
       </PanelHeader>
       <PanelBody>
         {props.job.features.map(feature => <Tag key={feature.id}>{feature.name}</Tag>)}

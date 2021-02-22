@@ -4,20 +4,23 @@ import styled from 'styled-components'
 import { CircularProgress } from '@material-ui/core';
 
 // reducers
-import { jobsSearchReducer} from '../reducers/JobsSearch'
-import { jobsReducer, initialState as initialJobsState } from '../reducers/Jobs'
+import { jobsSearchReducer} from '../reducers/jobsSearch'
+import { jobsReducer, initialState as initialJobsState } from '../reducers/jobs'
+import { applicationReducer, initialState as initialApplicationState } from '../reducers/application'
 
 // apis
 import { searchJob } from '../apis/jobs'
+import { SubmitApplication } from '../apis/application'
 
 // components
 import { Header } from '../components/Header'
-import { JobSearch } from '../components/JobSearch'
+import { JobsSearch } from '../components/JobsSearch'
 import { Container } from '../components/Container'
 import { JobListPanel } from '../components/JobListPanel'
 import { JobDetail } from '../components/JobDetail'
+import { ApplicationModal } from '../components/ApplicationModal'
 
-const JobSearchWrapper = styled.div`
+const JobsSearchWrapper = styled.div`
   padding: 10px;
   border-bottom: 1px solid #f2f2f2;
 `
@@ -33,6 +36,10 @@ const LeftContent = styled.div`
   width: 40%;
   padding: 0 15px;
   box-sizing: border-box;
+
+  span {
+    font-weight: 600;
+  }
 `
 const RightContent = styled.div`
   width: 60%;
@@ -62,6 +69,7 @@ export const Jobs = () => {
   let keyword = useQuery().get('keyword')
   let location = useQuery().get('location')
 
+  // initial states
   const initialJobsSearchState = {
     keyword: keyword,
     location: location
@@ -70,11 +78,14 @@ export const Jobs = () => {
   const initialState = {
     isJobOpened: false,
     selectedJob: {},
-    isJobDetailFixed: false
+    isJobDetailFixed: false,
+    isApplicationModalOpened: false
   }
 
+  // states & reducers
   const [jobsSearchState, dispatch] = useReducer(jobsSearchReducer, initialJobsSearchState)
   const [jobsState, jobsDispatch] = useReducer(jobsReducer, initialJobsState)
+  const [applicationState, applicationDispatch] = useReducer(applicationReducer, initialApplicationState)
   const [state, setState] = useState(initialState)
 
   // Needs the stateRef for mutable state that getScrollTop func refers to
@@ -90,6 +101,10 @@ export const Jobs = () => {
     dispatch({ e: e })
   }
 
+  const handleApplicationInput = (e) => {
+    applicationDispatch({ type: e.target.name, e: e })
+  }
+
   const getScrollTop = () => {
     if (document.documentElement.scrollTop >= 179) {
       setState({ ...stateRef.current, isJobDetailFixed: true })
@@ -98,12 +113,29 @@ export const Jobs = () => {
     } 
   }
 
+  const handleApplicationSubmit = () => {
+    applicationDispatch({ type: 'posting' })
+    SubmitApplication(applicationState)
+    .then(data => {
+      applicationDispatch({ type: 'postDone' })
+    })
+    .catch((e) => {
+      if (e.response.status === 406) {
+        applicationDispatch({ type: 'notAcceptable' })
+      }
+    })
+  }
+
   const openJobDetail = (job) => {
     getScrollTop()
     setState({ ...stateRef.current, isJobOpened: true, selectedJob: job })
     window.history.pushState('', '', `?keyword=${keyword}&location=${location}&adv=${job.id}`)
   }
-  
+
+  const closeApplicationModal = () => {
+    setState({...state, isApplicationModalOpened: false})
+    applicationDispatch({ type: 'initializing' })
+  }
 
   useEffect(() => {
     document.addEventListener('scroll', () => getScrollTop())
@@ -125,11 +157,11 @@ export const Jobs = () => {
   return (
     <Fragment>
       <Header />
-      <JobSearchWrapper>
+      <JobsSearchWrapper>
         <Container>
-          <JobSearch state={jobsSearchState} handleInput={handleInput} />
+          <JobsSearch state={jobsSearchState} handleInput={handleInput} />
         </Container>     
-      </JobSearchWrapper> 
+      </JobsSearchWrapper> 
       <MainContainer>
         <MainContent>
           
@@ -137,7 +169,18 @@ export const Jobs = () => {
               jobsState.fetchState === 'done' ? 
                <Fragment>
                  <LeftContent>
-                  { jobsState.jobsList.map((job) => <JobListPanel job={job} key={job.id} openJobDetail={(job) => openJobDetail(job)} />) }
+                  { 
+                    jobsState.jobsList.length == 0 ?
+                      <p><span>{`${initialJobsSearchState.keyword}の求人 - ${initialJobsSearchState.location}`}</span>に一致する求人は見つかりませんでした</p>
+                    :
+                      jobsState.jobsList.map((job) => 
+                        <JobListPanel 
+                          job={job} 
+                          selectedJob={state.selectedJob} 
+                          key={job.id} 
+                          openJobDetail={(job) => openJobDetail(job)} 
+                        />) 
+                  }
                  </LeftContent>
                  <RightContent>
                   {
@@ -146,9 +189,22 @@ export const Jobs = () => {
                         job={state.selectedJob} 
                         closeJobDetail={closeJobDetail}
                         isJobDetailFixed={stateRef.current.isJobDetailFixed}
+                        openApplicationModal={() => { setState({...state, isApplicationModalOpened: true}) }}
                       />
                   }
                  </RightContent>
+                 {
+                   state.isApplicationModalOpened &&
+                     <ApplicationModal 
+                       job={state.selectedJob}
+                       isOpen={state.isApplicationModalOpened}
+                       onClose={closeApplicationModal}
+                       applicationState={applicationState}
+                       handleApplicationInput={handleApplicationInput}
+                       handleApplicationSubmit={handleApplicationSubmit}
+                       setJobId={applicationDispatch}
+                     />
+                 }
                </Fragment>  
               :
                 <CircleWrapper>

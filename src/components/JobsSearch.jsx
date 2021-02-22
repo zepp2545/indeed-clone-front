@@ -4,19 +4,12 @@ import { Link } from 'react-router-dom'
 
 // components
 import { BaseButton } from './Buttons/BaseButton'
+import { Input } from './Inputs/Input'
 
-const JobSearchWrapper = styled.div`
+const JobsSearchWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-`
-const Input = styled.input`
-  height: 40px;
-  width: 100%;
-  box-sizing: border-box;
-  border-radius: 7px;
-  border: 1px solid #989898;
-  padding: 2px 10px;
 `
 
 const ItemWrapper = styled.div`
@@ -36,14 +29,14 @@ const ButtonLink = styled(Link)`
   text-decoration: none;
 `
 
-export const JobSearch = (props) => {
+export const JobsSearch = (props) => {
 
   const parsedUrl = (keyword, location) => {
     return (`/jobs?keyword=${keyword}&location=${location}`)
   }
 
   return (
-    <JobSearchWrapper>
+    <JobsSearchWrapper>
       <ItemWrapper>
         <Input
           placeholder="職種、キーワード、会社名など" 
@@ -65,6 +58,6 @@ export const JobSearch = (props) => {
           求人検索
         </SubmitButton>
       </ButtonLink>
-    </JobSearchWrapper>
+    </JobsSearchWrapper>
   )
 } 
