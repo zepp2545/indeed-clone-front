@@ -7,7 +7,7 @@ import { Jobs } from './containers/Jobs'
 
 function App() {
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
       <Switch>
         <Route exact path="/">
           <Top />
