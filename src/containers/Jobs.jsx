@@ -1,10 +1,10 @@
 import React, { Fragment, useReducer, useEffect, useState, useRef } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import { CircularProgress } from '@material-ui/core';
 
 // reducers
-import { jobsSearchReducer} from '../reducers/jobsSearch'
+import { jobsSearchReducer, initialState as initialJobsSearchState } from '../reducers/jobsSearch'
 import { jobsReducer, initialState as initialJobsState } from '../reducers/jobs'
 import { applicationReducer, initialState as initialApplicationState } from '../reducers/application'
 
@@ -19,6 +19,7 @@ import { Container } from '../components/Container'
 import { JobListPanel } from '../components/JobListPanel'
 import { JobDetail } from '../components/JobDetail'
 import { ApplicationModal } from '../components/ApplicationModal'
+import { Pagination } from '../components/Pagination'
 
 const JobsSearchWrapper = styled.div`
   padding: 10px;
@@ -60,6 +61,7 @@ const CircleWrapper = styled.div`
   width: 100%;
 `
 
+
 export const Jobs = () => {
 
   const useQuery = () => {
@@ -68,20 +70,21 @@ export const Jobs = () => {
 
   let keyword = useQuery().get('keyword')
   let location = useQuery().get('location')
+  let page = useQuery().get('page')
 
   // initial states
-  const initialJobsSearchState = {
-    keyword: keyword,
-    location: location
-  }
-
   const initialState = {
     isJobOpened: false,
     selectedJob: {},
     isJobDetailFixed: false,
-    isApplicationModalOpened: false
+    isApplicationModalOpened: false,
   }
 
+  // initializing initialJobsSearchState for this page purpose
+  initialJobsSearchState.keyword = keyword
+  initialJobsSearchState.location = location
+  initialJobsSearchState.page = page
+  
   // states & reducers
   const [jobsSearchState, dispatch] = useReducer(jobsSearchReducer, initialJobsSearchState)
   const [jobsState, jobsDispatch] = useReducer(jobsReducer, initialJobsState)
@@ -94,11 +97,13 @@ export const Jobs = () => {
 
   const closeJobDetail = () => {
     setState({...initialState, isJobOpened: false, selectedJob: {} })
-    window.history.pushState('', '' , `?keyword=${keyword}&location=${location}`)
+    let url = `jobs?keyword=${keyword}&location=${location}`
+    url = !page ? url : url + `&page=${page}`
+    window.history.pushState('', '' , url)
   }
 
   const handleInput = (e) => {
-    dispatch({ e: e })
+    dispatch({ type: e.target.name, payload: e })
   }
 
   const handleApplicationInput = (e) => {
@@ -141,18 +146,19 @@ export const Jobs = () => {
     document.addEventListener('scroll', () => getScrollTop())
     closeJobDetail()
     jobsDispatch({ fetchState: 'fetching' })
-    searchJob(initialJobsSearchState).then(data => {
+    searchJob(jobsSearchState).then(data => {
       jobsDispatch({ 
         fetchState: 'done',
-        payloads: {
-          jobs: data
+        payload: {
+          jobs: data.jobs,
+          count: data.count
         }
       })
     })
     return () => {
       document.removeEventListener('scroll', getScrollTop())
     }
-  }, [keyword, location])
+  }, [keyword, location, page])
 
   return (
     <Fragment>
@@ -171,7 +177,7 @@ export const Jobs = () => {
                  <LeftContent>
                   { 
                     jobsState.jobsList.length == 0 ?
-                      <p><span>{`${initialJobsSearchState.keyword}の求人 - ${initialJobsSearchState.location}`}</span>に一致する求人は見つかりませんでした</p>
+                      <p><span>{`${keyword}の求人 - ${location}`}</span>に一致する求人は見つかりませんでした</p>
                     :
                       jobsState.jobsList.map((job) => 
                         <JobListPanel 
@@ -180,6 +186,16 @@ export const Jobs = () => {
                           key={job.id} 
                           openJobDetail={(job) => openJobDetail(job)} 
                         />) 
+                  }
+                  {
+                    jobsState.jobsList.length !== 0 &&
+                      <div style={{textAlign: "center"}}>
+                        <Pagination 
+                          jobsSearchState={jobsSearchState} 
+                          currentPage={page}
+                          jobsCount={jobsState.count}
+                        />
+                      </div>
                   }
                  </LeftContent>
                  <RightContent>

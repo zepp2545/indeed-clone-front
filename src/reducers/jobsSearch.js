@@ -1,19 +1,21 @@
 export const initialState = {
   keyword: '',
-  location: ''
+  location: '',
+  page: 1
 }
 
 export const jobsSearchReducer = (state, action) => {
-  switch (action.e.target.name) {
+  switch (action.type) {
     case "keyword":
       return {
         ...state,
-        keyword: action.e.target.value
+        keyword: action.payload.target.value
       }
     case "location":
       return {
         ...state,
-        location: action.e.target.value
+        location: action.payload.target.value
       }
+    
   }
 }

@@ -36,7 +36,7 @@ export const Top = () => {
   const [jobsSearchState, dispatch] = useReducer(jobsSearchReducer, jobsSearchInitialState)
 
   const handleInput = (e) => {
-    dispatch({ e: e })
+    dispatch({ type: e.target.name, payload: e })
   }
 
   return (

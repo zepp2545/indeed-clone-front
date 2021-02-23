@@ -7,7 +7,8 @@ export const searchJob = async (conditions) => {
   return await axios.get(JOBS_SEARCH_URL, { 
     params: {
       keyword: conditions.keyword, 
-      location: conditions.location 
+      location: conditions.location,
+      page: conditions.page
     }
   })
   .then(res => {

@@ -1,6 +1,7 @@
 export const initialState = {
   fetchState: 'initial',
-  jobsList: []
+  jobsList: [],
+  count: 0
 }
 
 export const jobsReducer = (state, action) => {
@@ -14,7 +15,8 @@ export const jobsReducer = (state, action) => {
       return {
         ...state,
         fetchState: 'done',
-        jobsList: action.payloads.jobs
+        jobsList: action.payload.jobs,
+        count: action.payload.count
       }
   }
 }
