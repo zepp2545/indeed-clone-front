@@ -62,6 +62,11 @@ const SubmitButton = styled(BaseButton)`
   } 
 `
 
+const Title = styled.div`
+  font-size: 20px;
+  font-weight: 600;
+`
+
 export const ApplicationModal = (props) => {
   useEffect(() => {
     props.setJobId({ type: 'modalShowing', jobId: props.job.id })
@@ -70,7 +75,7 @@ export const ApplicationModal = (props) => {
   return (
     <Dialog open={props.isOpen} onClose={props.onClose} >
       <DialogTitle>
-        <h3>{props.job.title}</h3>
+        <Title>{props.job.title}</Title>
         <p>{`${props.job.company.name} - ${props.job.prefecture.name} ${props.job.location_detail}`}</p>
       </DialogTitle>
       <Fragment >
