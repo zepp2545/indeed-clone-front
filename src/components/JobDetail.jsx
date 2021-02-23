@@ -12,7 +12,9 @@ import { BaseButton } from './Buttons/BaseButton'
 const JobDetailPanel = styled.div`
   border: solid 1px #dcdcdc;
   padding: 15px;
+  max-width: 638px;
   border-radius: 10px;
+  max-height: 95vh;
 `
 const PanelHeader = styled.div`
   padding: 15px;
@@ -34,6 +36,8 @@ const ModalButton = styled(BaseButton)`
 
 const PanelBody = styled.div`
   padding: 15px;
+  overflow-y: scroll;
+  max-height: 65vh;
 `
 const Description = styled.div`
   font-size: 14px;
@@ -41,6 +45,7 @@ const Description = styled.div`
   min-height: 60px;
   line-height: 25px;
   padding: 25px 0;
+  white-space: pre-wrap;
 `
 
 const Cross = styled.div`

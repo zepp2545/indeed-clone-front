@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import moment from 'moment' 
 import 'moment/locale/ja'
+import TextTruncate from 'react-text-truncate'
 
 // components
 import { Tag } from './Tags/Tag'
@@ -18,7 +19,6 @@ const Panel = styled.div`
   padding: 15px;
   margin-bottom: 20px;
   cursor: pointer;
-  
 `
 
 const Title = styled.h2`
@@ -38,6 +38,7 @@ const DateWrapper = styled.div`
   color: #ababab;
 `
 
+
 export const JobListPanel = (props) => {
   const borderClass = props.selectedJob && (props.selectedJob.id === props.job.id) && '-selected'
 
@@ -51,7 +52,11 @@ export const JobListPanel = (props) => {
       }      
       {props.job.features.map(feature => <Tag key={feature.id}>{feature.name}</Tag>)}
       <Description>
-        {props.job.description}
+        <TextTruncate 
+          line={2}
+          element="span"
+          text={props.job.description} 
+        />
       </Description>
       <DateWrapper>
         {moment(props.job.created_at).fromNow()}
