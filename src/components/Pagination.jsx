@@ -9,6 +9,7 @@ const PageLink = styled(Link)`
   background-color: #e4e2e0;
   border-radius: 5px;
   padding: 8px;
+  margin-left: 10px;
   text-decoration: none;
   width: 20px;
   height: 25px;
@@ -22,7 +23,7 @@ const PageLink = styled(Link)`
 
 const LinkWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 0 30px;
   margin: 30px 0;
 `
