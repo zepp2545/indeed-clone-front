@@ -9,7 +9,7 @@ import { jobsReducer, initialState as initialJobsState } from '../reducers/jobs'
 import { applicationReducer, initialState as initialApplicationState } from '../reducers/application'
 
 // apis
-import { searchJob } from '../apis/jobs'
+import { searchJobs, fetchJob } from '../apis/jobs'
 import { SubmitApplication } from '../apis/application'
 
 // components
@@ -60,6 +60,13 @@ const CircleWrapper = styled.div`
   padding: 100px;
   width: 100%;
 `
+const SkeletonWrapper = styled.div`
+  border: solid 1px #dcdcdc;
+  padding: 15px;
+  max-width: 638px;
+  border-radius: 10px;
+  max-height: 95vh;
+`
 
 
 export const Jobs = () => {
@@ -74,7 +81,7 @@ export const Jobs = () => {
 
   // initial states
   const initialState = {
-    isJobOpened: false,
+    jobFetchingState: 'initial',
     selectedJob: {},
     isJobDetailFixed: false,
     isApplicationModalOpened: false,
@@ -96,7 +103,7 @@ export const Jobs = () => {
   stateRef.current = state
 
   const closeJobDetail = () => {
-    setState({...initialState, isJobOpened: false, selectedJob: {} })
+    setState({...initialState, jobFetchingState: 'initial', selectedJob: {} })
     let url = `jobs?keyword=${keyword}&location=${location}`
     url = !page ? url : url + `&page=${page}`
     window.history.pushState('', '' , url)
@@ -132,9 +139,13 @@ export const Jobs = () => {
   }
 
   const openJobDetail = (job) => {
-    getScrollTop()
-    setState({ ...stateRef.current, isJobOpened: true, selectedJob: job })
     window.history.pushState('', '', `?keyword=${keyword}&location=${location}&adv=${job.id}`)
+    getScrollTop()
+    setState({ ...stateRef.current, jobFetchingState: 'fetching' })
+    fetchJob(job.id)
+    .then(data => {
+      setState({ ...stateRef.current, jobFetchingState: 'done', selectedJob: data })
+    })    
   }
 
   const closeApplicationModal = () => {
@@ -146,7 +157,7 @@ export const Jobs = () => {
     document.addEventListener('scroll', () => getScrollTop())
     closeJobDetail()
     jobsDispatch({ fetchState: 'fetching' })
-    searchJob(jobsSearchState).then(data => {
+    searchJobs(jobsSearchState).then(data => {
       jobsDispatch({ 
         fetchState: 'done',
         payload: {
@@ -200,8 +211,9 @@ export const Jobs = () => {
                  </LeftContent>
                  <RightContent>
                   {
-                    state.isJobOpened &&
-                      <JobDetail 
+                    (state.jobFetchingState === "done" || state.jobFetchingState === "fetching") &&
+                      <JobDetail
+                        jobFetchingState={state.jobFetchingState}
                         job={state.selectedJob} 
                         closeJobDetail={closeJobDetail}
                         isJobDetailFixed={stateRef.current.isJobDetailFixed}

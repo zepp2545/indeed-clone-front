@@ -30,7 +30,6 @@ const ButtonLink = styled(Link)`
 `
 
 export const JobsSearch = (props) => {
-  console.log(props)
   const parsedUrl = (keyword, location) => {
     return (`/jobs?keyword=${keyword}&location=${location}`)
   }
