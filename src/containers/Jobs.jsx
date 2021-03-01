@@ -85,6 +85,7 @@ export const Jobs = () => {
     selectedJob: {},
     isJobDetailFixed: false,
     isApplicationModalOpened: false,
+    isJobDetailOpened: false
   }
 
   // initializing initialJobsSearchState for this page purpose
@@ -114,7 +115,7 @@ export const Jobs = () => {
   }
 
   const handleApplicationInput = (e) => {
-    applicationDispatch({ type: e.target.name, e: e })
+    applicationDispatch({ type: e.target.name, payload: { e: e }})
   }
 
   const getScrollTop = () => {
@@ -141,7 +142,7 @@ export const Jobs = () => {
   const openJobDetail = (job) => {
     window.history.pushState('', '', `?keyword=${keyword}&location=${location}&adv=${job.id}`)
     getScrollTop()
-    setState({ ...stateRef.current, jobFetchingState: 'fetching' })
+    setState({ ...stateRef.current, jobFetchingState: 'fetching', isJobDetailOpened: true, selectedJob: job })
     fetchJob(job.id)
     .then(data => {
       setState({ ...stateRef.current, jobFetchingState: 'done', selectedJob: data })
@@ -156,10 +157,10 @@ export const Jobs = () => {
   useEffect(() => {
     document.addEventListener('scroll', () => getScrollTop())
     closeJobDetail()
-    jobsDispatch({ fetchState: 'fetching' })
+    jobsDispatch({ type: 'fetching' })
     searchJobs(jobsSearchState).then(data => {
       jobsDispatch({ 
-        fetchState: 'done',
+        type: 'done',
         payload: {
           jobs: data.jobs,
           count: data.count
@@ -196,6 +197,7 @@ export const Jobs = () => {
                           selectedJob={state.selectedJob} 
                           key={job.id} 
                           openJobDetail={(job) => openJobDetail(job)} 
+                          isJobDetailOpened={state.isJobDetailOpened}
                         />) 
                   }
                   {

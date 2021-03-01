@@ -40,7 +40,7 @@ const DateWrapper = styled.div`
 
 
 export const JobListPanel = (props) => {
-  const borderClass = props.selectedJob && (props.selectedJob.id === props.job.id) && '-selected'
+  const borderClass = props.isJobDetailOpened && (props.selectedJob.id === props.job.id) && '-selected'
 
   return (
     <Panel onClick={() => props.openJobDetail(props.job)} className={borderClass} >

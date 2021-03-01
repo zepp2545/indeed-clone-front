@@ -11,22 +11,22 @@ export const applicationReducer = (state, action) => {
     case "name":
       return {
         ...state,
-        name: action.e.target.value
+        name: action.payload.e.target.value
       }
     case "email":
       return {
         ...state,
-        email: action.e.target.value
+        email: action.payload.e.target.value
       }
     case "tel":
       return {
         ...state,
-        tel: action.e.target.value
+        tel: action.payload.e.target.value
       }
     case "modalShowing":
       return {
         ...state,
-        job_id: action.jobId
+        job_id: action.payload.jobId
       }
     case "posting":
       return {

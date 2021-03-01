@@ -69,7 +69,7 @@ const Title = styled.div`
 
 export const ApplicationModal = (props) => {
   useEffect(() => {
-    props.setJobId({ type: 'modalShowing', jobId: props.job.id })
+    props.setJobId({ type: 'modalShowing', payload: { jobId: props.job.id }})
   }, [])
 
   return (

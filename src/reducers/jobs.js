@@ -5,7 +5,7 @@ export const initialState = {
 }
 
 export const jobsReducer = (state, action) => {
-  switch (action.fetchState) {
+  switch (action.type) {
     case "fetching":
       return {
         ...state,
