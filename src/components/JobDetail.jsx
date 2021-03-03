@@ -37,11 +37,11 @@ const ModalButton = styled(BaseButton)`
 
 const PanelBody = styled.div`
   padding: 15px;
-  overflow-y: hidden;
+  overflow-y: scroll;
   max-height: 65vh;
 `
 
-const SkeletonPanelBody = styled(PanelBody)`
+const SkeletonPanelBody = styled.div`
   padding: 15px;
   max-height: 65vh;
   overflow-y: none;
