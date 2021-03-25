@@ -16,6 +16,5 @@ export const jobsSearchReducer = (state, action) => {
         ...state,
         location: action.payload.target.value
       }
-    
   }
 }

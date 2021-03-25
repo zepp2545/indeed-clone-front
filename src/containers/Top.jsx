@@ -11,7 +11,7 @@ import { Footer } from '../components/Footer'
 import { COLORS } from '../constants/styleConstants'
 
 // reducers
-import { initialState as jobsSearchInitialState, jobsSearchReducer} from '../reducers/jobsSearch'
+import { initialState as jobsSearchInitialState, jobsSearchReducer } from '../reducers/jobsSearch'
 
 const DescriptionWrapper = styled.p`
   width: 80%;

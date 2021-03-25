@@ -22,7 +22,6 @@ const SubmitButton = styled(BaseButton)`
   height: 45px;
   line-height: 45px;
   margin-left: 20px;
-  
 `
 
 const ButtonLink = styled(Link)`

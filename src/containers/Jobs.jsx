@@ -25,6 +25,7 @@ const JobsSearchWrapper = styled.div`
   padding: 10px;
   border-bottom: 1px solid #f2f2f2;
 `
+
 const MainContainer = styled(Container)`
   min-width: 1200px;
 `
@@ -60,6 +61,7 @@ const CircleWrapper = styled.div`
   padding: 100px;
   width: 100%;
 `
+
 const SkeletonWrapper = styled.div`
   border: solid 1px #dcdcdc;
   padding: 15px;
@@ -67,7 +69,6 @@ const SkeletonWrapper = styled.div`
   border-radius: 10px;
   max-height: 95vh;
 `
-
 
 export const Jobs = () => {
 
@@ -182,60 +183,59 @@ export const Jobs = () => {
       </JobsSearchWrapper> 
       <MainContainer>
         <MainContent>
-          
             {
               jobsState.fetchState === 'done' ? 
-               <Fragment>
-                 <LeftContent>
-                  { 
-                    jobsState.jobsList.length == 0 ?
-                      <p><span>{`${keyword}の求人 - ${location}`}</span>に一致する求人は見つかりませんでした</p>
-                    :
-                      jobsState.jobsList.map((job) => 
-                        <JobListPanel 
-                          job={job} 
-                          selectedJob={state.selectedJob} 
-                          key={job.id} 
-                          openJobDetail={(job) => openJobDetail(job)} 
-                          isJobDetailOpened={state.isJobDetailOpened}
-                        />) 
-                  }
-                  {
-                    jobsState.jobsList.length !== 0 &&
-                      <div style={{textAlign: "center"}}>
-                        <Pagination 
-                          jobsSearchState={jobsSearchState} 
-                          currentPage={page}
-                          jobsCount={jobsState.count}
+                <Fragment>
+                  <LeftContent>
+                    { 
+                      jobsState.jobsList.length == 0 ?
+                        <p><span>{`${keyword}の求人 - ${location}`}</span>に一致する求人は見つかりませんでした</p>
+                      :
+                        jobsState.jobsList.map((job) => 
+                          <JobListPanel 
+                            job={job} 
+                            selectedJob={state.selectedJob} 
+                            key={job.id} 
+                            openJobDetail={(job) => openJobDetail(job)} 
+                            isJobDetailOpened={state.isJobDetailOpened}
+                          />) 
+                    }
+                    {
+                      jobsState.jobsList.length !== 0 &&
+                        <div style={{textAlign: "center"}}>
+                          <Pagination 
+                            jobsSearchState={jobsSearchState} 
+                            currentPage={page}
+                            jobsCount={jobsState.count}
+                          />
+                        </div>
+                    }
+                  </LeftContent>
+                  <RightContent>
+                    {
+                      (state.jobFetchingState === "done" || state.jobFetchingState === "fetching") &&
+                        <JobDetail
+                          jobFetchingState={state.jobFetchingState}
+                          job={state.selectedJob} 
+                          closeJobDetail={closeJobDetail}
+                          isJobDetailFixed={stateRef.current.isJobDetailFixed}
+                          openApplicationModal={() => { setState({...state, isApplicationModalOpened: true}) }}
                         />
-                      </div>
-                  }
-                 </LeftContent>
-                 <RightContent>
+                    }
+                  </RightContent>
                   {
-                    (state.jobFetchingState === "done" || state.jobFetchingState === "fetching") &&
-                      <JobDetail
-                        jobFetchingState={state.jobFetchingState}
-                        job={state.selectedJob} 
-                        closeJobDetail={closeJobDetail}
-                        isJobDetailFixed={stateRef.current.isJobDetailFixed}
-                        openApplicationModal={() => { setState({...state, isApplicationModalOpened: true}) }}
+                    state.isApplicationModalOpened &&
+                      <ApplicationModal 
+                        job={state.selectedJob}
+                        isOpen={state.isApplicationModalOpened}
+                        onClose={closeApplicationModal}
+                        applicationState={applicationState}
+                        handleApplicationInput={handleApplicationInput}
+                        handleApplicationSubmit={handleApplicationSubmit}
+                        setJobId={applicationDispatch}
                       />
                   }
-                 </RightContent>
-                 {
-                   state.isApplicationModalOpened &&
-                     <ApplicationModal 
-                       job={state.selectedJob}
-                       isOpen={state.isApplicationModalOpened}
-                       onClose={closeApplicationModal}
-                       applicationState={applicationState}
-                       handleApplicationInput={handleApplicationInput}
-                       handleApplicationSubmit={handleApplicationSubmit}
-                       setJobId={applicationDispatch}
-                     />
-                 }
-               </Fragment>  
+                </Fragment>  
               :
                 <CircleWrapper>
                   <CircleLoading />
